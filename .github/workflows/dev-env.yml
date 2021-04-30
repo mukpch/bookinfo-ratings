@@ -22,7 +22,6 @@ jobs:
         with:
           push: true
           tags: ghcr.io/mukpch/bookinfo_ratings:dev
-
 deploy:
     needs: build
     runs-on: ubuntu-20.04
