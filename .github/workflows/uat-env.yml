@@ -13,7 +13,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         uses: docker/build-push-action@v2
@@ -46,9 +46,3 @@ jobs:
                 "COMMIT_SHA": "${{ github.sha }}"
               }
             } 
- acceptance-test:
-  needs: deploy
-  runs-on: ubuntu-20.04
-  steps:
-    - name: Test health service
-      run: curl http://bookinfo.uat.opsta.net/student61/ratings/health | grep "Ratings is working"
