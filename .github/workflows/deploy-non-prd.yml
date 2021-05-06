@@ -25,6 +25,8 @@ jobs:
     needs: build
     runs-on: ubuntu-20.04
     steps:
+      - name: Set env
+        run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/master" ] && echo 'uat' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v2
       - name: get-credentials
@@ -40,7 +42,7 @@ jobs:
           release: bookinfo-${{ env.ENV_NAME }}-ratings
           namespace: student61-bookinfo-${{ env.ENV_NAME }}
           chart: k8s/helm
-          value-files: k8s/helm-values/values-bookinfo-dev-ratings.yaml
+          value-files: k8s/helm-values/values-bookinfo-${{ env.ENV_NAME }}-ratings.yaml
           values: |
             {
               "extraEnv": {
@@ -51,5 +53,7 @@ jobs:
     needs: deploy
     runs-on: ubuntu-20.04
     steps:
+      - name: Set env
+        run: echo "ENV_NAME=$( [ "$GITHUB_REF" == "refs/heads/master" ] && echo 'uat' || echo ${GITHUB_REF##*/} )" >> $GITHUB_ENV
       - name: Test health service
         run: curl http://bookinfo.${{ env.ENV_NAME }}.opsta.net/student61/ratings/health | grep "Ratings is working" 
